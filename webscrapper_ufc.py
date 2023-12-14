@@ -11,7 +11,7 @@ import json
 import mysql.connector
 
 DB_HOST = '192.168.86.239'  # Change to your MySQL/MariaDB server hostname or IP address
-DB_PORT = 12345  
+DB_PORT = 3306  
 DB_USER = 'root'  # Change to your MySQL/MariaDB username
 DB_PASS = 'password'  # Change to your MySQL/MariaDB password
 DB_NAME = 'mysql01'  # Change to the name of your MySQL/MariaDB database
