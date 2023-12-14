@@ -10,7 +10,7 @@ import json
 # Database integration
 import mysql.connector
 
-DB_HOST = '192.168.86.239'  # Change to your MySQL/MariaDB server hostname or IP address
+DB_HOST = '192.168.86.238'  # Change to your MySQL/MariaDB server hostname or IP address
 DB_PORT = 3306  
 DB_USER = 'root'  # Change to your MySQL/MariaDB username
 DB_PASS = 'password'  # Change to your MySQL/MariaDB password
