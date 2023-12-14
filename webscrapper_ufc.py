@@ -1,5 +1,5 @@
 
-# Requirements: 
+# Requirements:
 # pip3 install requests beautifulsoup4
 # pip3 install mysql-connector-python
 
@@ -11,7 +11,7 @@ import json
 import mysql.connector
 
 DB_HOST = '192.168.86.238'  # Change to your MySQL/MariaDB server hostname or IP address
-DB_PORT = 3306  
+DB_PORT = 3306
 DB_USER = 'root'  # Change to your MySQL/MariaDB username
 DB_PASS = 'password'  # Change to your MySQL/MariaDB password
 DB_NAME = 'mysql01'  # Change to the name of your MySQL/MariaDB database
@@ -119,9 +119,9 @@ def all_fights(url):
 
     for fighter_href in fighter_divs:
         red_fighter = fighter_href.find('div', class_='c-listing-fight__corner-name c-listing-fight__corner-name--red')
-        blue_fighter = fighter_href.find('div', class_='c-listing-fight__corner-name c-listing-fight__corner-name--blue')     
+        blue_fighter = fighter_href.find('div', class_='c-listing-fight__corner-name c-listing-fight__corner-name--blue')    
         fighter1 = ((red_fighter.a['href']).replace("https://www.ufc.com/athlete/","")).replace("-","_")
-        fighter2 = ((blue_fighter.a['href']).replace("https://www.ufc.com/athlete/","")).replace("-","_")              
+        fighter2 = ((blue_fighter.a['href']).replace("https://www.ufc.com/athlete/","")).replace("-","_")            
         fighter_vs_fighter = fighter1 + " vs " + fighter2
         fight_roster.append(fighter_vs_fighter)  # Append each fighter name to the list
     return(fight_roster)
