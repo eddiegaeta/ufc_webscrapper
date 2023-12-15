@@ -12,7 +12,7 @@ docker run ufc_webscrapper
 docker ps| grep ufc
 
 # exec into docker container
-docker exec -it <containerid> /bin/ash
+docker exec -it containerid /bin/ash
 
 # review cronlogs
 cat /var/logs/cron.log
