@@ -16,7 +16,7 @@ COPY webscrapper_ufc.py .
 RUN apk add --no-cache libffi-dev openssl-dev mariadb-dev
 
 # Install beautifulsoup4, requests, and mysql-connector using pip
-RUN pip install beautifulsoup4 requests mysql-connector-python
+RUN pip install beautifulsoup4 requests mysql-connector-python python-dotenv
 
 # Create a cron job that runs every 5 minutes
 # Redirect the cron job output to a log file

@@ -2,28 +2,43 @@
 # Requirements:
 # pip3 install requests beautifulsoup4
 # pip3 install mysql-connector-python
+# pip3 install python-dotenv
 
 import requests
 from bs4 import BeautifulSoup
 import json
-
-# Database integration
+import datetime
+from dotenv import load_dotenv
+import os #provides ways to access the Operating System and allows us to read the environment variables
 import mysql.connector
 
-DB_HOST = '192.168.86.238'  # Change to your MySQL/MariaDB server hostname or IP address
-DB_PORT = 3306
-DB_USER = 'root'  # Change to your MySQL/MariaDB username
-DB_PASS = 'password'  # Change to your MySQL/MariaDB password
-DB_NAME = 'mysql01'  # Change to the name of your MySQL/MariaDB database
+load_dotenv()  # take environment variables from .env.
+
+now = datetime.datetime.now()
+
+# Database integration
+
+database_host = os.getenv("DB_HOST")
+database_port = os.getenv("DB_PORT")
+database_user = os.getenv("DB_USER")
+database_password = os.getenv("DB_PASS")
+database_name = os.getenv("DB_NAME")
+
 
 # Connect to the MySQL database
 conn = mysql.connector.connect(
-    host=DB_HOST,
-    port=DB_PORT,           # Specify the custom port number here
-    user=DB_USER,
-    password=DB_PASS,
-    database=DB_NAME
-)
+    host=database_host,
+    port=database_port,           # Specify the custom port number here
+    user=database_user,
+    password=database_password,
+    database=database_name,
+    #  auth_plugin='mysql_native_password'
+    #  host=DB_HOST,
+    #  port=DB_PORT,           # Specify the custom port number here
+    #  user=DB_USER,
+    #  password=DB_PASS,
+    #  database=DB_NAME
+ )
 
 # Create a cursor object to interact with the database
 cursor = conn.cursor()
@@ -155,6 +170,7 @@ for title, date, venue_element, venue_location in zip(article_titles, event_date
     print(f"Event Location: {event_location}")
 
     print("-" * 40)
+    #print(now)
     
     insert_event(event_title, event_date, event_url, event_type, event_all_fighters, event_venue, event_location)
             

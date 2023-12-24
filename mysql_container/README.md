@@ -3,10 +3,10 @@
 ## Docker image ...
 
 # build docker container
-docker build -t mysql01 .
+sudo docker build -t mysql .
 
 # run docker conatainer
-docker run -d --name mysql01 -p 3306:3306 -v mysql-data:/var/lib/mysql mysql01
+sudo docker run -d --name mysql -p 3306:3306 -v mysql-data:/var/lib/mysql mysql
 
 # list docker container
-docker ps| grep mysql01
+sudo docker ps -a | grep mysql
