@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS mysql;
+CREATE DATABASE IF NOT EXISTS mysql01;
 
-USE mysql;
+USE mysql01;
 
 CREATE USER 'mysql_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
 GRANT ALL PRIVILEGES ON *.* TO 'mysql_user'@'localhost' WITH GRANT OPTION;
