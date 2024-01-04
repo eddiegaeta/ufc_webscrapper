@@ -50,8 +50,22 @@
                 <p>Event: <a href="<%= 'https://ufc.com'+event.event_url %>"><%= event.event_type %></a></p>
                 <p>Venue: <%= event.event_venue %></p>
                 <p>Location: <%= event.event_location %></p>
-                <p>All Fights: <%= event.event_all_fighters %></p>
-                <!-- Add more details as needed -->
+                <p>All Fights:
+                    <select>
+                        <% 
+                            // Parse the JSON string into an array
+                            var fightersArray = JSON.parse(event.event_all_fighters); 
+                            if (Array.isArray(fightersArray)) { 
+                                fightersArray.forEach(fighter => { %>
+                                    <option><%= fighter %></option>
+                                <% }); 
+                            } else { %>
+                                <option><%= event.event_all_fighters %></option>
+                            <% } %>
+                    </select>
+                </p>
+                
+
             </li>
         <% }); %>
     </ul>
