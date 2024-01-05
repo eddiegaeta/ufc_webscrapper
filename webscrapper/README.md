@@ -3,16 +3,23 @@
 ## Docker image ...
 
 # build docker container
-docker build -t ufc_webscrapper .
+sudo docker build -t ufc_webscrapper .
 
-# run docker conatainer
-docker run ufc_webscrapper
+# run docker container
+sudo docker run --env-file .env --name ufc_webscrapper ufc_webscrapper
+
+# join docker network
+sudo docker network connect dev_network ufc_webscrapper
 
 # list docker container
-docker ps| grep ufc
+sudo docker ps| grep ufc
 
 # exec into docker container
-docker exec -it containerid /bin/ash
+sudo docker exec -it containerid /bin/bash
 
 # review cronlogs
-cat /var/logs/cron.log
+cat /var/log/cron.log
+
+# verify environmental variables in container
+sudo docker exec ufc_webscrapper env 
+

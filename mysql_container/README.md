@@ -3,14 +3,18 @@
 ## Docker image ...
 
 # build docker container
-docker build -t mysql01 .
+sudo docker build -t mysql01 .
 
 # run docker conatainer
-docker run -d --name mysql01 -p 3306:3306 -v mysql-data:/var/lib/mysql --env-file .env mysql01
+sudo docker run -d --name mysql01 -p 3306:3306 -v mysql-data:/var/lib/mysql --env-file .env mysql01
+
+# join docker network
+sudo docker network connect dev_network mysql01
 
 # list docker container
-docker ps -a | grep mysql01
+sudo docker ps -a | grep mysql01
 
 # verify environmental variables in container
-docker exec mysql01 env 
+sudo docker exec mysql01 env 
+
 
