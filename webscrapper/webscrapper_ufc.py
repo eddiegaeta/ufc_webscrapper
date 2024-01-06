@@ -18,27 +18,28 @@ now = datetime.datetime.now()
 
 # Database integration
 
-database_host = os.getenv("DB_HOST")
-database_port = os.getenv("DB_PORT")
-database_user = os.getenv("DB_USER")
-database_password = os.getenv("DB_PASS")
-database_name = os.getenv("DB_NAME")
+# database_host = os.getenv("DB_HOST")
+# database_port = os.getenv("DB_PORT")
+# database_user = os.getenv("DB_USER")
+# database_password = os.getenv("DB_PASS")
+# database_name = os.getenv("DB_NAME")
+
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = int(os.getenv("DB_PORT") or "3306")
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASS")
+DB_NAME = os.getenv("DB_NAME")
 
 
 # Connect to the MySQL database
 conn = mysql.connector.connect(
-    host=database_host,
-    port=database_port,           # Specify the custom port number here
-    user=database_user,
-    password=database_password,
-    database=database_name,
-    #  auth_plugin='mysql_native_password'
-    #  host=DB_HOST,
-    #  port=DB_PORT,           # Specify the custom port number here
-    #  user=DB_USER,
-    #  password=DB_PASS,
-    #  database=DB_NAME
- )
+    #host=DB_HOST,
+    host='mysql01',
+    port=DB_PORT,
+    user=DB_USER,
+    password=DB_PASS,
+    database=DB_NAME
+)
 
 # Create a cursor object to interact with the database
 cursor = conn.cursor()
@@ -174,5 +175,8 @@ for title, date, venue_element, venue_location in zip(article_titles, event_date
     
     insert_event(event_title, event_date, event_url, event_type, event_all_fighters, event_venue, event_location)
             
+# Query the database to verify data (optional)
+query_database()
+
 # Close the database connection
 conn.close()

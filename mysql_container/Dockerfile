@@ -14,7 +14,7 @@ EXPOSE 3306
 WORKDIR /usr/src/app
 
 # (Optional) Copy custom MySQL configuration file
-# COPY ./my.cnf /etc/mysql/my.cnf
+COPY ./my.cnf /etc/mysql/my.cnf
 
 # Copy SQL script to initialize the database
 COPY ./init.sql /docker-entrypoint-initdb.d/

@@ -15,7 +15,7 @@ sudo docker network connect dev_network ufc_webscrapper
 sudo docker ps| grep ufc
 
 # exec into docker container
-sudo docker exec -it containerid /bin/bash
+sudo docker exec -it ufc_webscrapper /bin/bash
 
 # review cronlogs
 cat /var/log/cron.log
