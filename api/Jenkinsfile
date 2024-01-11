@@ -6,7 +6,8 @@ pipeline {
     stages { 
         stage('SCM Checkout') {
             steps{
-            git 'https://github.com/eddiegaeta/ufc_webscrapper.git'
+            sh 'git fetch --tags --force --progress -- https://github.com/eddiegaeta/ufc_webscrapper.git +refs/heads/*:refs/remotes/origin/* /var/lib/jenkins/workspace/UFC-webscrapper-nodeapi-docker-builder/.git'
+            //git 'https://github.com/eddiegaeta/ufc_webscrapper.git'
             }
         }
 
