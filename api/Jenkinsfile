@@ -12,26 +12,23 @@ pipeline {
 
         stage('Build docker image') {
             steps {  
-                sh 'cd api'
+                sh 'cd /api'
                 sh 'docker build -t edthegreat/nodeapi:$BUILD_NUMBER .'
             }
         }
         stage('login to dockerhub') {
             steps{
-                sh 'cd api'
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
         stage('push image') {
             steps{
-                sh 'cd api'
                 sh 'docker push edthegreat/nodeapi:$BUILD_NUMBER'
             }
         }
 }
 post {
         always {
-            sh 'cd api'
             sh 'docker logout'
         }
     }
