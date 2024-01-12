@@ -1,4 +1,4 @@
-# Collection of code meant to build a docker stack for ufc.com webscrapping
+# Collection of code meant to build work flow for ufc.com webscrapping
 
 ## The docker containers consist of: 
     
