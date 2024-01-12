@@ -14,15 +14,15 @@ pipeline {
 
         stage('Build docker image') {
             steps {  
-                dir('api') {
-                    sh 'docker build -t edthegreat/nodeapi:$BUILD_NUMBER .'
+                dir('ufc_mysql_db') {
+                    sh 'docker build -t edthegreat/ufc_mysql_db:$BUILD_NUMBER .'
                 }
             }
         }
 
         stage('login to dockerhub') {
             steps {
-                sh 'cd api'
+                sh 'cd ufc_mysql_db'
                 withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
                     sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
                 }
@@ -31,15 +31,15 @@ pipeline {
 
         stage('push image') {
             steps {
-                sh 'cd api'
-                sh 'docker push edthegreat/nodeapi:$BUILD_NUMBER'
+                sh 'cd ufc_mysql_db'
+                sh 'docker push edthegreat/ufc_mysql_db:$BUILD_NUMBER'
             }
         }
     }
 
     post {
         always {
-            sh 'cd api'
+            sh 'cd ufc_mysql_db'
             sh 'docker logout'
         }
     }

@@ -1,0 +1,46 @@
+pipeline {
+    agent { label 'docker' }
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_CREDENTIALS')
+    }
+
+    stages { 
+        stage('SCM Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/eddiegaeta/ufc_webscrapper.git'
+            }
+        }
+
+        stage('Build docker image') {
+            steps {  
+                dir('ufc_python_webscrapper') {
+                    sh 'docker build -t edthegreat/ufc_python_webscrapper:$BUILD_NUMBER .'
+                }
+            }
+        }
+
+        stage('login to dockerhub') {
+            steps {
+                sh 'cd ufc_python_webscrapper'
+                withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                    sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                }
+            }
+        }
+
+        stage('push image') {
+            steps {
+                sh 'cd ufc_python_webscrapper'
+                sh 'docker push edthegreat/ufc_python_webscrapper:$BUILD_NUMBER'
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'cd ufc_python_webscrapper'
+            sh 'docker logout'
+        }
+    }
+}
