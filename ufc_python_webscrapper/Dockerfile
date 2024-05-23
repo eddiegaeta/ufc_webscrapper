@@ -1,5 +1,5 @@
 # Use Ubuntu as the base image
-FROM ubuntu:latest
+FROM ubuntu:18.04
 
 # Install Python, cron, and other dependencies
 RUN apt-get update && \
