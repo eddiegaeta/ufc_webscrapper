@@ -21,3 +21,5 @@ RUN (crontab -l ; echo "*/5 * * * * /usr/bin/python3 /app/webscrapper_ufc.py >> 
 
 # Run cron in the foreground
 CMD ["cron", "-f"]
+
+###Test
