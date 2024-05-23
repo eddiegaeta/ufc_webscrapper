@@ -1,5 +1,5 @@
 # Use Ubuntu as the base image
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # Install Python, cron, and other dependencies
 RUN apt-get update && \
