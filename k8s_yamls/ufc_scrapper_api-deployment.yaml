@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ufc-scrapper-api
+spec:
+  selector:
+    matchLabels:
+      app: ufc-scrapper-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ufc-scrapper-api
+    spec:
+      containers:
+      - name: ufc-scrapper-api
+        image: edthegreat/ufc_nodejs_api
+        env:
+        - name: DB_HOST
+          value: "mysql"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_USER
+          value: "mysqluser"
+        - name: DB_PASS
+          value: "password"
+        - name: DB_NAME
+          value: "mysql01"
+        ports:
+        - containerPort: 3000

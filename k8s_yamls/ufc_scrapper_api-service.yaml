@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ufc-scrapper-api
+spec:
+  selector:
+    app: ufc-scrapper-api
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
