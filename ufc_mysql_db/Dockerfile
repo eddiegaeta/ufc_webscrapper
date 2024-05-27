@@ -1,5 +1,5 @@
 # Use the official MySQL base image
-FROM mysql:latest
+FROM mysql:8.4
 
 # Environment variables for MySQL
 #ENV MYSQL_ROOT_PASSWORD=password
