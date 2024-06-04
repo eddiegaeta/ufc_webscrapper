@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: ufc-python-webscrapper
-        image: edthegreat/ufc_python_webscrapper:18
+        image: edthegreat/ufc_python_webscrapper:21
         env:
         - name: DB_HOST
           value: "mysql"
