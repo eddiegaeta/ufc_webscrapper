@@ -1,5 +1,5 @@
 # Use an official Node.js runtime as a base image
-FROM node:14 AS build
+FROM node:18 AS build
 
 # Set the working directory in the container for the React build
 WORKDIR /usr/src/app/client
@@ -17,7 +17,7 @@ COPY client/ ./
 RUN npm run build
 
 # Use a new stage for the Node.js API to avoid conflicts with the React build
-FROM node:14
+FROM node:18
 
 # Set the working directory in the container for the Node.js API
 WORKDIR /usr/src/app
