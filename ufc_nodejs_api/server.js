@@ -1,22 +1,13 @@
-// Install dependencies: 
-// npm i express
-// npm run serve
-// npm i nodemon -D
-// npm i nodemon -g
-// npm run dev
-// npm i mysql
-// npm install dotenv --save
-// npm install ejs --save
-
 const express = require('express');
-const app = express();
+const path = require('path');
 const mysql = require('mysql2');
-const ejs = require('ejs');
+const app = express();
 require('dotenv').config();
 
-app.set('view engine', 'ejs');
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.get('/events', (req, res) => {
+app.get('/api/events', (req, res) => {
     const connection = mysql.createConnection({
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
@@ -24,21 +15,32 @@ app.get('/events', (req, res) => {
         database: process.env.DB_NAME
     });
 
-    connection.connect();
-
-    connection.query('SELECT * FROM events', function (error, results, fields) {
-        if (error) {
-            console.error('Error executing query:', error);
+    connection.connect((err) => {
+        if (err) {
+            console.error('Error connecting to MySQL:', err);
             res.status(500).send('Internal Server Error');
             return;
         }
 
-        res.render('events', { events: results });
-    });
+        connection.query('SELECT * FROM events', function (error, results, fields) {
+            if (error) {
+                console.error('Error executing query:', error);
+                res.status(500).send('Internal Server Error');
+                return;
+            }
 
-    connection.end();
+            res.json(results);
+            connection.end();
+        });
+    });
 });
 
-app.listen(3000, () => {
-    console.log('Node is running on port 3000');
+// The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/client/build/index.html'));
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Node is running on port ${PORT}`);
 });
