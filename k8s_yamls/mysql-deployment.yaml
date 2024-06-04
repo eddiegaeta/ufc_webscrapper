@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: edthegreat/ufc_mysql_db
+        image: edthegreat/ufc_mysql_db:4
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: "password"
@@ -26,3 +26,10 @@ spec:
           value: "password"
         ports:
         - containerPort: 3306
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc
