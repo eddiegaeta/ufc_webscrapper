@@ -1,10 +1,10 @@
-# Use an official Node.js runtime as a base image
+# Use an official Node.js runtime as a base image for building the React app
 FROM node:18 AS build
 
 # Set the working directory in the container for the React build
 WORKDIR /usr/src/app/client
 
-# Copy package.json and package-lock.json of React app to the working directory
+# Copy package.json and package-lock.json of the React app to the working directory
 COPY client/package*.json ./
 
 # Install React application dependencies
@@ -33,9 +33,6 @@ COPY . .
 
 # Copy the React build from the previous stage
 COPY --from=build /usr/src/app/client/build ./client/build
-
-# Install additional dependencies
-RUN npm install express mysql dotenv ejs node-fetch
 
 # Expose the port that the app will run on
 EXPOSE 3000

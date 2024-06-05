@@ -28,7 +28,8 @@ DB_NAME = os.getenv("DB_NAME")
 
 # Connect to the MySQL database
 conn = mysql.connector.connect(
-    host=DB_HOST,
+    #host=DB_HOST,
+    host='localhost',
     port=DB_PORT,
     user=DB_USER,
     password=DB_PASS,

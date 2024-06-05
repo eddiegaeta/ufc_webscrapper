@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: ufc-scrapper-api
-        image: edthegreat/ufc_nodejs_api:72
+        image: edthegreat/ufc_nodejs_api:74
         env:
         - name: DB_HOST
           value: "mysql"
