@@ -1,9 +1,10 @@
 const express = require('express');
 const path = require('path');
-const app = express();
 const mysql = require('mysql2');
+const moment = require('moment-timezone');
 require('dotenv').config();
 
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Serve static files from the React app
@@ -19,14 +20,25 @@ app.get('/api/events', (req, res) => {
 
     connection.connect();
 
-    connection.query('SELECT * FROM events', function (error, results, fields) {
+    connection.query('SELECT * FROM events', function (error, results) {
         if (error) {
             console.error('Error executing query:', error);
             res.status(500).send('Internal Server Error');
             return;
         }
 
-        res.json(results);
+        const now = moment();
+
+        const futureEvents = results.filter(event => {
+            const eventDate = moment(event.event_date, 'ddd, MMM D , h:mm A z');
+            return eventDate.isSameOrAfter(now);
+        }).sort((a, b) => {
+            const dateA = moment(a.event_date, 'ddd, MMM D , h:mm A z');
+            const dateB = moment(b.event_date, 'ddd, MMM D , h:mm A z');
+            return dateA - dateB;
+        });
+
+        res.json(futureEvents);
     });
 
     connection.end();

@@ -26,7 +26,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Install application dependencies and nodemon globally in one step to reduce layers
-RUN npm install && npm install -g nodemon
+RUN npm install && npm install -g nodemon && npm install moment && npm install moment-timezone
 
 # Copy the rest of the application code to the working directory
 COPY . .
