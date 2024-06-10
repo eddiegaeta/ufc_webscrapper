@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "ufc-events.fullname" . }}-scrapper-api
+  labels:
+  {{- include "ufc-events.labels" . | nindent 4 }}
+spec:
+  ingressClassName: ngrok
+  rules:
+  - host: nice-mongrel-choice.ngrok-free.app
+    http:
+      paths:
+      - backend:
+          service:
+            name: '{{ include "ufc-events.fullname" . }}-scrapper-api'
+            port:
+              number: 3001
+        path: /
+        pathType: Prefix

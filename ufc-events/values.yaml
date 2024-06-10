@@ -1,0 +1,49 @@
+kubernetesClusterDomain: cluster.local
+mysql:
+  mysql:
+    env:
+      mysqlDatabase: mysql01
+      mysqlPassword: password
+      mysqlRootPassword: password
+      mysqlUser: mysqluser
+    image:
+      repository: edthegreat/ufc_mysql_db
+      tag: "4"
+  ports:
+  - port: 3306
+    protocol: TCP
+    targetPort: 3306
+  replicas: 1
+  type: ClusterIP
+pvc:
+  mysqlPvc:
+    storageRequest: 1Gi
+pythonWebscrapper:
+  replicas: 1
+  ufcPythonWebscrapper:
+    env:
+      dbHost: mysql
+      dbName: mysql01
+      dbPass: password
+      dbPort: "3306"
+      dbUser: mysqluser
+    image:
+      repository: edthegreat/ufc_python_webscrapper
+      tag: "27"
+scrapperApi:
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  replicas: 1
+  type: ClusterIP
+  ufcScrapperApi:
+    env:
+      dbHost: mysql
+      dbName: mysql01
+      dbPass: password
+      dbPort: "3306"
+      dbUser: mysqluser
+    image:
+      repository: edthegreat/ufc_nodejs_api
+      tag: "77"

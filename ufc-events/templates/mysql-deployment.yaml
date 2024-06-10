@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ufc-events.fullname" . }}-mysql
+  labels:
+  {{- include "ufc-events.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.mysql.replicas }}
+  selector:
+    matchLabels:
+      app: mysql
+    {{- include "ufc-events.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: mysql
+      {{- include "ufc-events.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: {{ quote .Values.mysql.mysql.env.mysqlRootPassword }}
+        - name: MYSQL_DATABASE
+          value: {{ quote .Values.mysql.mysql.env.mysqlDatabase }}
+        - name: MYSQL_USER
+          value: {{ quote .Values.mysql.mysql.env.mysqlUser }}
+        - name: MYSQL_PASSWORD
+          value: {{ quote .Values.mysql.mysql.env.mysqlPassword }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.mysql.mysql.image.repository }}:{{ .Values.mysql.mysql.image.tag
+          | default .Chart.AppVersion }}
+        name: mysql
+        ports:
+        - containerPort: 3306
+        resources: {}
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql-storage
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: {{ include "ufc-events.fullname" . }}-mysql-pvc

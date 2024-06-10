@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ufc-events.fullname" . }}-scrapper-api
+  labels:
+  {{- include "ufc-events.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.scrapperApi.replicas }}
+  selector:
+    matchLabels:
+      app: ufc-scrapper-api
+    {{- include "ufc-events.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: ufc-scrapper-api
+      {{- include "ufc-events.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+      - env:
+        - name: DB_HOST
+          value: {{ quote .Values.scrapperApi.ufcScrapperApi.env.dbHost }}
+        - name: DB_PORT
+          value: {{ quote .Values.scrapperApi.ufcScrapperApi.env.dbPort }}
+        - name: DB_USER
+          value: {{ quote .Values.scrapperApi.ufcScrapperApi.env.dbUser }}
+        - name: DB_PASS
+          value: {{ quote .Values.scrapperApi.ufcScrapperApi.env.dbPass }}
+        - name: DB_NAME
+          value: {{ quote .Values.scrapperApi.ufcScrapperApi.env.dbName }}
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.scrapperApi.ufcScrapperApi.image.repository }}:{{ .Values.scrapperApi.ufcScrapperApi.image.tag
+          | default .Chart.AppVersion }}
+        name: ufc-scrapper-api
+        ports:
+        - containerPort: 3000
+        resources: {}
