@@ -20,7 +20,7 @@ app.get('/api/events', (req, res) => {
 
     connection.connect();
 
-    const now = moment().tz('America/New_York').format('ddd, MMM D , h:mm A z'); // Adjust timezone as needed
+    const now = moment().tz('America/Los_Angeles').format('ddd, MMM D , h:mm A z'); // Adjust timezone as needed
     const query = 'SELECT * FROM events WHERE STR_TO_DATE(event_date, "%a, %b %e , %l:%i %p %Z ") >= STR_TO_DATE(?, "%a, %b %e , %l:%i %p %Z ") ORDER BY STR_TO_DATE(event_date, "%a, %b %e , %l:%i %p %Z ") LIMIT 8';
     
     connection.query(query, [now], function (error, results, fields) {

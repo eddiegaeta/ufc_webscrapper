@@ -17,7 +17,7 @@ from dateutil.tz import gettz
 load_dotenv()  # take environment variables from .env.
 
 # Convert now to a timezone-aware datetime
-now = datetime.datetime.now(gettz("America/New_York"))
+now = datetime.datetime.now(gettz("America/Los_Angeles"))
 
 # Database integration
 DB_HOST = os.getenv("DB_HOST")
