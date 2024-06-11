@@ -2,30 +2,26 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import datetime
-from dotenv import load_dotenv
 import os
 import mysql.connector
 import moment
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Print environment variables for debugging
-print("DB_HOST:", os.getenv("DB_HOST"))
-print("DB_PORT:", os.getenv("DB_PORT"))
-print("DB_USER:", os.getenv("DB_USER"))
-print("DB_PASS:", os.getenv("DB_PASS"))
-print("DB_NAME:", os.getenv("DB_NAME"))
 
 # Get current time
 now = datetime.datetime.now()
 
 # Get environment variables
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = int(os.getenv("DB_PORT", "3306"))
-DB_USER = os.getenv("DB_USER")
-DB_PASS = os.getenv("DB_PASS")
-DB_NAME = os.getenv("DB_NAME")
+DB_HOST = os.environ.get("DB_HOST", "localhost")
+DB_PORT = int(os.environ.get("DB_PORT", "3306"))
+DB_USER = os.environ.get("DB_USER")
+DB_PASS = os.environ.get("DB_PASS")
+DB_NAME = os.environ.get("DB_NAME")
+
+# Print environment variables for debugging
+print("DB_HOST:", DB_HOST)
+print("DB_PORT:", DB_PORT)
+print("DB_USER:", DB_USER)
+print("DB_PASS:", DB_PASS)
+print("DB_NAME:", DB_NAME)
 
 # Connect to the MySQL database
 conn = mysql.connector.connect(
@@ -154,9 +150,4 @@ if __name__ == "__main__":
         
         insert_event(event_title, event_date, event_url, event_type, event_all_fighters, event_venue, event_location)
     
-    # Query the database to verify data (optional)
-    upcoming_events = query_database(limit=8)
-    print(upcoming_events)
-    
-    # Close the database connection
-    conn.close()
+    #
