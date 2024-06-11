@@ -16,11 +16,11 @@ COPY requirements.txt .
 # Install additional dependencies for Beautiful Soup 4 and MySQL connector
 RUN pip install -r requirements.txt
 
-# Create a cron job that runs every 5 minutes
-# Redirect the cron job output to a log file
-RUN (crontab -l ; echo "*/5 * * * * /usr/local/bin/python /app/webscrapper_ufc.py >> /var/log/cron.log 2>&1") | crontab -
+# Copy the entrypoint script into the container
+COPY entrypoint.sh /usr/local/bin/
 
-# Run cron in the foreground
-CMD ["cron", "-f"]
+# Make the entrypoint script executable
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-###Test
+# Define the entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
