@@ -41,6 +41,11 @@ cursor = conn.cursor()
 
 # Function to create the database table if it doesn't exist
 def create_table():
+    # Drop the table if it exists
+    cursor.execute('''
+        DROP TABLE IF EXISTS events
+    ''')
+    
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS events (
             event_title VARCHAR(255),
