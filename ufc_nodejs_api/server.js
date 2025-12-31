@@ -59,15 +59,15 @@ app.get('/api/events', async (req, res) => {
             });
         }
 
-        const now = moment().tz('America/New_York').format('ddd, MMM D , h:mm A z');
+        // Simple query - just get all events and let client-side handle date filtering
+        // The date format from scraper is complex and varies (EST/EDT)
         const query = `
             SELECT * FROM events 
-            WHERE STR_TO_DATE(event_date, "%a, %b %e , %l:%i %p %Z ") >= STR_TO_DATE(?, "%a, %b %e , %l:%i %p %Z ") 
-            ORDER BY STR_TO_DATE(event_date, "%a, %b %e , %l:%i %p %Z ") 
+            ORDER BY event_date
             LIMIT ?
         `;
         
-        const [results] = await promisePool.query(query, [now, limit]);
+        const [results] = await promisePool.query(query, [limit]);
         
         res.json({
             count: results.length,
