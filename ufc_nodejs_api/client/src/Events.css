@@ -1,52 +1,279 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #181717;
-    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #e0e0e0;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
 }
 
 .events-container {
-    max-width: 800px;
-    margin: 20px auto;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-    color: hsl(0, 68%, 42%);
+.events-header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, #c20a0a 0%, #8b0000 100%);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(194, 10, 10, 0.3);
 }
 
-ul {
-    list-style-type: none;
+.events-header h1 {
+    color: #fff;
+    font-size: 2.5rem;
+    margin: 0 0 20px 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.search-bar {
+    margin: 20px auto;
+    max-width: 500px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+
+.search-bar input:focus {
+    outline: none;
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(194, 10, 10, 0.4);
+}
+
+.event-count {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.1rem;
+    margin: 10px 0 0 0;
+}
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
     padding: 0;
 }
 
-li {
+.event-card {
+    background: linear-gradient(145deg, #2a2a2a 0%, #1f1f1f 100%);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid rgba(194, 10, 10, 0.2);
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(194, 10, 10, 0.4);
+    border-color: rgba(194, 10, 10, 0.5);
+}
+
+.event-header {
+    border-bottom: 2px solid rgba(194, 10, 10, 0.5);
+    padding-bottom: 15px;
     margin-bottom: 20px;
-    padding: 20px;
-    border: 1px solid #ddd;
-    background-color: #fff;
+}
+
+.event-header h2 {
+    color: #fff;
+    font-size: 1.5rem;
+    margin: 0 0 10px 0;
+}
+
+.event-type {
+    display: inline-block;
+    background: rgba(194, 10, 10, 0.8);
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.event-details {
+    margin: 20px 0;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    margin: 12px 0;
+    color: #b0b0b0;
+}
+
+.detail-item .icon {
+    font-size: 1.3rem;
+    margin-right: 12px;
+    min-width: 30px;
+}
+
+.countdown {
+    background: rgba(194, 10, 10, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    border-left: 3px solid #c20a0a;
+}
+
+.countdown-text {
+    color: #fff;
+    font-weight: bold;
+}
+
+.fights-section {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(0,0,0,0.3);
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-h2 {
-    margin-top: 0;
-    color: hsl(0, 68%, 42%);
+.fights-section h3 {
+    color: #c20a0a;
+    font-size: 1.1rem;
+    margin: 0 0 15px 0;
 }
 
-p {
+.fights-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.fights-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.fights-list::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+}
+
+.fights-list::-webkit-scrollbar-thumb {
+    background: #c20a0a;
+    border-radius: 4px;
+}
+
+.fight-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
     margin: 5px 0;
+    background: rgba(255,255,255,0.05);
+    border-radius: 5px;
+    transition: background 0.2s;
 }
 
-a {
-    color: #0066cc;
+.fight-item:hover {
+    background: rgba(194, 10, 10, 0.2);
+}
+
+.fight-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    background: #c20a0a;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.fighters {
+    color: #e0e0e0;
+    text-transform: capitalize;
+}
+
+.event-link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #c20a0a 0%, #8b0000 100%);
+    color: #fff;
     text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.event-link:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(194, 10, 10, 0.5);
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.spinner {
+    margin: 30px auto;
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(194, 10, 10, 0.2);
+    border-top-color: #c20a0a;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.error-message {
+    text-align: center;
+    padding: 60px 20px;
+    color: #ff4444;
+}
+
+.error-message button {
+    margin-top: 20px;
+    padding: 12px 30px;
+    background: #c20a0a;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.error-message button:hover {
+    background: #8b0000;
+}
+
+.no-events {
+    text-align: center;
+    padding: 40px 20px;
+    color: #888;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .events-header h1 {
+        font-size: 2rem;
+    }
 }
 
 a:hover {
