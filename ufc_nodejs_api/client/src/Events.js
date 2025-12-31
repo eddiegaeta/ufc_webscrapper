@@ -15,11 +15,32 @@ function Events() {
 
     useEffect(() => {
         if (searchTerm) {
-            const filtered = events.filter(event => 
-                event.event_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                event.event_location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                event.event_venue.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+            const searchLower = searchTerm.toLowerCase();
+            const filtered = events.filter(event => {
+                // Search in title, location, venue
+                const titleMatch = event.event_title.toLowerCase().includes(searchLower);
+                const locationMatch = event.event_location.toLowerCase().includes(searchLower);
+                const venueMatch = event.event_venue.toLowerCase().includes(searchLower);
+                const typeMatch = event.event_type.toLowerCase().replace(/_/g, ' ').includes(searchLower);
+                
+                // Search in fighters
+                let fightersMatch = false;
+                try {
+                    const fighters = event.event_all_fighters ? 
+                        (typeof event.event_all_fighters === 'string' ? 
+                            JSON.parse(event.event_all_fighters) : 
+                            event.event_all_fighters) : 
+                        [];
+                    
+                    fightersMatch = fighters.some(fighter => 
+                        fighter.toLowerCase().replace(/_/g, ' ').includes(searchLower)
+                    );
+                } catch (e) {
+                    // Ignore parse errors
+                }
+                
+                return titleMatch || locationMatch || venueMatch || typeMatch || fightersMatch;
+            });
             setFilteredEvents(filtered);
         } else {
             setFilteredEvents(events);
@@ -152,7 +173,7 @@ function Events() {
                 <div className="search-bar">
                     <input
                         type="text"
-                        placeholder="Search by title, location, or venue..."
+                        placeholder="Search events, fighters, locations, or venues..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
