@@ -42,8 +42,32 @@ function Events() {
 
     const getTimeUntilEvent = (eventDateStr) => {
         try {
-            // Parse the event date string
-            const eventDate = new Date(eventDateStr);
+            // Parse the custom date format: "Sat, Jan 24 , 9:00 PM EST "
+            // Format: DayName, Month Day , Hour:Minute AM/PM Timezone
+            const cleanDateStr = eventDateStr.trim();
+            
+            // Extract parts using regex
+            const datePattern = /(\w+),\s+(\w+)\s+(\d+)\s+,\s+(\d+):(\d+)\s+(AM|PM)\s+(\w+)/;
+            const match = cleanDateStr.match(datePattern);
+            
+            if (!match) {
+                return 'Date format error';
+            }
+            
+            const [, , month, day, hour, minute, ampm, timezone] = match;
+            
+            // Convert to a parseable date string
+            const currentYear = new Date().getFullYear();
+            const nextYear = currentYear + 1;
+            
+            // Try current year first, then next year
+            let eventDate = new Date(`${month} ${day}, ${currentYear} ${hour}:${minute} ${ampm}`);
+            
+            // If the date is in the past, try next year
+            if (eventDate < new Date()) {
+                eventDate = new Date(`${month} ${day}, ${nextYear} ${hour}:${minute} ${ampm}`);
+            }
+            
             const now = new Date();
             const diff = eventDate - now;
 
@@ -55,12 +79,15 @@ function Events() {
             if (days > 0) {
                 return `${days} day${days > 1 ? 's' : ''} ${hours} hour${hours > 1 ? 's' : ''}`;
             } else if (hours > 0) {
-                return `${hours} hour${hours > 1 ? 's' : ''}`;
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                return `${hours} hour${hours > 1 ? 's' : ''} ${minutes} min`;
             } else {
-                return 'Starting soon!';
+                const minutes = Math.floor(diff / (1000 * 60));
+                return minutes > 0 ? `${minutes} minutes` : 'Starting soon!';
             }
-        } catch {
-            return '';
+        } catch (error) {
+            console.error('Error parsing date:', eventDateStr, error);
+            return 'Date unavailable';
         }
     };
 
