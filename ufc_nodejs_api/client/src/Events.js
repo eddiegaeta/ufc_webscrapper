@@ -30,13 +30,45 @@ function Events() {
         try {
             const response = await axios.get('/api/events');
             const eventsData = response.data.events || response.data;
-            setEvents(eventsData);
-            setFilteredEvents(eventsData);
+            
+            // Sort events by date (closest first)
+            const sortedEvents = eventsData.sort((a, b) => {
+                const dateA = parseEventDate(a.event_date);
+                const dateB = parseEventDate(b.event_date);
+                return dateA - dateB;
+            });
+            
+            setEvents(sortedEvents);
+            setFilteredEvents(sortedEvents);
             setLoading(false);
         } catch (error) {
             console.error('Error fetching events:', error);
             setError('Failed to load events. Please try again later.');
             setLoading(false);
+        }
+    };
+
+    const parseEventDate = (eventDateStr) => {
+        try {
+            const cleanDateStr = eventDateStr.trim();
+            const datePattern = /(\w+),\s+(\w+)\s+(\d+)\s+,\s+(\d+):(\d+)\s+(AM|PM)\s+(\w+)/;
+            const match = cleanDateStr.match(datePattern);
+            
+            if (!match) return new Date(0);
+            
+            const [, , month, day, hour, minute, ampm] = match;
+            const currentYear = new Date().getFullYear();
+            const nextYear = currentYear + 1;
+            
+            let eventDate = new Date(`${month} ${day}, ${currentYear} ${hour}:${minute} ${ampm}`);
+            
+            if (eventDate < new Date()) {
+                eventDate = new Date(`${month} ${day}, ${nextYear} ${hour}:${minute} ${ampm}`);
+            }
+            
+            return eventDate;
+        } catch {
+            return new Date(0);
         }
     };
 
