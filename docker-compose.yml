@@ -1,0 +1,63 @@
+services:
+  # MySQL Database
+  mysql:
+    build: ./ufc_mysql_db
+    container_name: mysql01
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: ufc_events
+      MYSQL_USER: ufc_user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - dev_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Python Web Scraper
+  webscraper:
+    build: ./ufc_python_webscrapper
+    container_name: ufc_webscrapper
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ufc_user
+      DB_PASS: password
+      DB_NAME: ufc_events
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - dev_network
+
+  # Node.js API
+  api:
+    build: ./ufc_nodejs_api
+    container_name: ufc_scrapper_api
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ufc_user
+      DB_PASS: password
+      DB_NAME: ufc_events
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - dev_network
+
+networks:
+  dev_network:
+    driver: bridge
+
+volumes:
+  mysql_data:

@@ -84,8 +84,15 @@ def query_database(limit=8):
     for row in rows:
         event_date_str = row[1].strip()  # Event date is in row[1]
         try:
-            event_date = parser.parse(event_date_str, tzinfos={"EDT": gettz("America/New_York")})  # Parse the date string into a datetime object with timezone info
-        except ValueError:
+            # Parse with timezone info for both EST and EDT
+            event_date = parser.parse(event_date_str, tzinfos={
+                "EDT": gettz("America/New_York"),
+                "EST": gettz("America/New_York")
+            })
+            # If parsing resulted in a naive datetime, make it aware
+            if event_date.tzinfo is None:
+                event_date = event_date.replace(tzinfo=gettz("America/New_York"))
+        except (ValueError, TypeError):
             continue  # Skip rows with invalid date formats
 
         if event_date >= now:
@@ -101,7 +108,10 @@ def query_database(limit=8):
             upcoming_events.append(event)
 
     # Sort the events by date
-    upcoming_events.sort(key=lambda x: parser.parse(x["event_date"], tzinfos={"EDT": gettz("America/New_York")}))
+    upcoming_events.sort(key=lambda x: parser.parse(x["event_date"], tzinfos={
+        "EDT": gettz("America/New_York"),
+        "EST": gettz("America/New_York")
+    }))
     
     return upcoming_events[:limit]
 
@@ -135,12 +145,19 @@ if __name__ == "__main__":
         fight_roster = []  # Create an empty list to store fighter names
 
         for fighter_href in fighter_divs:
-            red_fighter = fighter_href.find('div', class_='c-listing-fight__corner-name c-listing-fight__corner-name--red')
-            blue_fighter = fighter_href.find('div', class_='c-listing-fight__corner-name c-listing-fight__corner-name--blue')    
-            fighter1 = ((red_fighter.a['href']).replace("https://www.ufc.com/athlete/","")).replace("-","_")
-            fighter2 = ((blue_fighter.a['href']).replace("https://www.ufc.com/athlete/","")).replace("-","_")            
-            fighter_vs_fighter = fighter1 + " vs " + fighter2
-            fight_roster.append(fighter_vs_fighter)  # Append each fighter name to the list
+            try:
+                red_fighter = fighter_href.find('div', class_='c-listing-fight__corner-name c-listing-fight__corner-name--red')
+                blue_fighter = fighter_href.find('div', class_='c-listing-fight__corner-name c-listing-fight__corner-name--blue')
+                
+                # Check if fighter elements and their links exist
+                if red_fighter and red_fighter.a and blue_fighter and blue_fighter.a:
+                    fighter1 = ((red_fighter.a['href']).replace("https://www.ufc.com/athlete/","")).replace("-","_")
+                    fighter2 = ((blue_fighter.a['href']).replace("https://www.ufc.com/athlete/","")).replace("-","_")            
+                    fighter_vs_fighter = fighter1 + " vs " + fighter2
+                    fight_roster.append(fighter_vs_fighter)  # Append each fighter name to the list
+            except (AttributeError, KeyError, TypeError) as e:
+                # Skip fights with missing or malformed data
+                continue
         return(fight_roster)
 
     # Loop through the article titles, event dates, and venue elements
