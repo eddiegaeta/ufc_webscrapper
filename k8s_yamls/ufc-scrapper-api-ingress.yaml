@@ -1,17 +1,17 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ufc-scrapper-api
-spec:
-  ingressClassName: ngrok
-  rules:
-    - host: nice-mongrel-choice.ngrok-free.app # Replace this with your actual domain
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: ufc-scrapper-api
-                port:
-                  number: 3001  # Ensure this matches the service port
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: ufc-scrapper-api
+#spec:
+#  ingressClassName: ngrok
+#  rules:
+#    - host: nice-mongrel-choice.ngrok-free.app # Replace this with your actual domain
+#      http:
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: ufc-scrapper-api
+#                port:
+#                  number: 3001  # Ensure this matches the service port¬

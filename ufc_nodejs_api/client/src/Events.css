@@ -266,13 +266,123 @@ body {
     font-size: 1.1rem;
 }
 
+/* Tablet and below */
 @media (max-width: 768px) {
     .events-grid {
         grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .events-header {
+        padding: 20px 15px;
     }
     
     .events-header h1 {
         font-size: 2rem;
+    }
+    
+    .event-card {
+        padding: 20px;
+    }
+    
+    .search-bar input {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+    body {
+        padding: 0;
+    }
+    
+    .events-container {
+        padding: 10px;
+    }
+    
+    .events-header {
+        padding: 15px 10px;
+        margin-bottom: 20px;
+    }
+    
+    .events-header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .search-bar {
+        margin: 15px auto;
+    }
+    
+    .search-bar input {
+        padding: 12px 15px;
+        font-size: 16px;
+    }
+    
+    .event-count {
+        font-size: 1rem;
+    }
+    
+    .events-grid {
+        gap: 15px;
+    }
+    
+    .event-card {
+        padding: 15px;
+    }
+    
+    .event-header h2 {
+        font-size: 1.25rem;
+    }
+    
+    .event-type {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+    }
+    
+    .detail-item {
+        font-size: 0.9rem;
+        margin: 10px 0;
+    }
+    
+    .detail-item .icon {
+        font-size: 1.1rem;
+        margin-right: 10px;
+    }
+    
+    .fights-section {
+        padding: 12px;
+    }
+    
+    .fights-section h3 {
+        font-size: 1rem;
+    }
+    
+    .fight-item {
+        font-size: 0.85rem;
+        padding: 6px 8px;
+    }
+    
+    .fight-number {
+        width: 22px;
+        height: 22px;
+        font-size: 0.75rem;
+        margin-right: 10px;
+    }
+    
+    .event-link {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .loading-spinner h2 {
+        font-size: 1.25rem;
+    }
+    
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border-width: 4px;
     }
 }
 

@@ -15,11 +15,32 @@ function Events() {
 
     useEffect(() => {
         if (searchTerm) {
-            const filtered = events.filter(event => 
-                event.event_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                event.event_location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                event.event_venue.toLowerCase().includes(searchTerm.toLowerCase())
-            );
+            const searchLower = searchTerm.toLowerCase();
+            const filtered = events.filter(event => {
+                // Search in title, location, venue
+                const titleMatch = event.event_title.toLowerCase().includes(searchLower);
+                const locationMatch = event.event_location.toLowerCase().includes(searchLower);
+                const venueMatch = event.event_venue.toLowerCase().includes(searchLower);
+                const typeMatch = event.event_type.toLowerCase().replace(/_/g, ' ').includes(searchLower);
+                
+                // Search in fighters
+                let fightersMatch = false;
+                try {
+                    const fighters = event.event_all_fighters ? 
+                        (typeof event.event_all_fighters === 'string' ? 
+                            JSON.parse(event.event_all_fighters) : 
+                            event.event_all_fighters) : 
+                        [];
+                    
+                    fightersMatch = fighters.some(fighter => 
+                        fighter.toLowerCase().replace(/_/g, ' ').includes(searchLower)
+                    );
+                } catch (e) {
+                    // Ignore parse errors
+                }
+                
+                return titleMatch || locationMatch || venueMatch || typeMatch || fightersMatch;
+            });
             setFilteredEvents(filtered);
         } else {
             setFilteredEvents(events);
@@ -30,8 +51,16 @@ function Events() {
         try {
             const response = await axios.get('/api/events');
             const eventsData = response.data.events || response.data;
-            setEvents(eventsData);
-            setFilteredEvents(eventsData);
+            
+            // Sort events by date (closest first)
+            const sortedEvents = eventsData.sort((a, b) => {
+                const dateA = parseEventDate(a.event_date);
+                const dateB = parseEventDate(b.event_date);
+                return dateA - dateB;
+            });
+            
+            setEvents(sortedEvents);
+            setFilteredEvents(sortedEvents);
             setLoading(false);
         } catch (error) {
             console.error('Error fetching events:', error);
@@ -40,10 +69,58 @@ function Events() {
         }
     };
 
+    const parseEventDate = (eventDateStr) => {
+        try {
+            const cleanDateStr = eventDateStr.trim();
+            const datePattern = /(\w+),\s+(\w+)\s+(\d+)\s+,\s+(\d+):(\d+)\s+(AM|PM)\s+(\w+)/;
+            const match = cleanDateStr.match(datePattern);
+            
+            if (!match) return new Date(0);
+            
+            const [, , month, day, hour, minute, ampm] = match;
+            const currentYear = new Date().getFullYear();
+            const nextYear = currentYear + 1;
+            
+            let eventDate = new Date(`${month} ${day}, ${currentYear} ${hour}:${minute} ${ampm}`);
+            
+            if (eventDate < new Date()) {
+                eventDate = new Date(`${month} ${day}, ${nextYear} ${hour}:${minute} ${ampm}`);
+            }
+            
+            return eventDate;
+        } catch {
+            return new Date(0);
+        }
+    };
+
     const getTimeUntilEvent = (eventDateStr) => {
         try {
-            // Parse the event date string
-            const eventDate = new Date(eventDateStr);
+            // Parse the custom date format: "Sat, Jan 24 , 9:00 PM EST "
+            // Format: DayName, Month Day , Hour:Minute AM/PM Timezone
+            const cleanDateStr = eventDateStr.trim();
+            
+            // Extract parts using regex
+            const datePattern = /(\w+),\s+(\w+)\s+(\d+)\s+,\s+(\d+):(\d+)\s+(AM|PM)\s+(\w+)/;
+            const match = cleanDateStr.match(datePattern);
+            
+            if (!match) {
+                return 'Date format error';
+            }
+            
+            const [, , month, day, hour, minute, ampm, timezone] = match;
+            
+            // Convert to a parseable date string
+            const currentYear = new Date().getFullYear();
+            const nextYear = currentYear + 1;
+            
+            // Try current year first, then next year
+            let eventDate = new Date(`${month} ${day}, ${currentYear} ${hour}:${minute} ${ampm}`);
+            
+            // If the date is in the past, try next year
+            if (eventDate < new Date()) {
+                eventDate = new Date(`${month} ${day}, ${nextYear} ${hour}:${minute} ${ampm}`);
+            }
+            
             const now = new Date();
             const diff = eventDate - now;
 
@@ -55,12 +132,15 @@ function Events() {
             if (days > 0) {
                 return `${days} day${days > 1 ? 's' : ''} ${hours} hour${hours > 1 ? 's' : ''}`;
             } else if (hours > 0) {
-                return `${hours} hour${hours > 1 ? 's' : ''}`;
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                return `${hours} hour${hours > 1 ? 's' : ''} ${minutes} min`;
             } else {
-                return 'Starting soon!';
+                const minutes = Math.floor(diff / (1000 * 60));
+                return minutes > 0 ? `${minutes} minutes` : 'Starting soon!';
             }
-        } catch {
-            return '';
+        } catch (error) {
+            console.error('Error parsing date:', eventDateStr, error);
+            return 'Date unavailable';
         }
     };
 
@@ -93,7 +173,7 @@ function Events() {
                 <div className="search-bar">
                     <input
                         type="text"
-                        placeholder="Search by title, location, or venue..."
+                        placeholder="Search events, fighters, locations, or venues..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
