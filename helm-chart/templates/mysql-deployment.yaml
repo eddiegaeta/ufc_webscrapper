@@ -1,0 +1,55 @@
+{{- if .Values.mysql.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ufc-webscrapper.fullname" . }}-mysql
+  labels:
+    {{- include "ufc-webscrapper.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mysql
+spec:
+  selector:
+    matchLabels:
+      {{- include "ufc-webscrapper.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        {{- include "ufc-webscrapper.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: "{{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}"
+        imagePullPolicy: {{ .Values.mysql.image.pullPolicy }}
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: {{ .Values.mysql.rootPassword | quote }}
+        - name: MYSQL_DATABASE
+          value: {{ .Values.mysql.database | quote }}
+        - name: MYSQL_USER
+          value: {{ .Values.mysql.user | quote }}
+        - name: MYSQL_PASSWORD
+          value: {{ .Values.mysql.password | quote }}
+        ports:
+        - containerPort: {{ .Values.mysql.service.port }}
+        {{- if .Values.mysql.persistence.enabled }}
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+        {{- end }}
+        {{- with .Values.mysql.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.mysql.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- if .Values.mysql.persistence.enabled }}
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: {{ include "ufc-webscrapper.fullname" . }}-mysql-pvc
+      {{- end }}
+{{- end }}

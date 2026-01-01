@@ -1,0 +1,40 @@
+{{- if .Values.pythonWebscrapper.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ufc-webscrapper.fullname" . }}-python-webscrapper
+  labels:
+    {{- include "ufc-webscrapper.labels" . | nindent 4 }}
+    app.kubernetes.io/component: python-webscrapper
+spec:
+  selector:
+    matchLabels:
+      {{- include "ufc-webscrapper.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: python-webscrapper
+  replicas: {{ .Values.pythonWebscrapper.replicas }}
+  template:
+    metadata:
+      labels:
+        {{- include "ufc-webscrapper.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: python-webscrapper
+    spec:
+      containers:
+      - name: python-webscrapper
+        image: "{{ .Values.pythonWebscrapper.image.repository }}:{{ .Values.pythonWebscrapper.image.tag }}"
+        imagePullPolicy: {{ .Values.pythonWebscrapper.image.pullPolicy }}
+        env:
+        - name: DB_HOST
+          value: {{ include "ufc-webscrapper.fullname" . }}-mysql
+        - name: DB_PORT
+          value: {{ .Values.pythonWebscrapper.env.dbPort | quote }}
+        - name: DB_USER
+          value: {{ .Values.pythonWebscrapper.env.dbUser | quote }}
+        - name: DB_PASS
+          value: {{ .Values.pythonWebscrapper.env.dbPassword | quote }}
+        - name: DB_NAME
+          value: {{ .Values.pythonWebscrapper.env.dbName | quote }}
+        {{- with .Values.pythonWebscrapper.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+{{- end }}

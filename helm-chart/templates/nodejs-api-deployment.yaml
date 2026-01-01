@@ -1,0 +1,42 @@
+{{- if .Values.nodejsApi.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ufc-webscrapper.fullname" . }}-nodejs-api
+  labels:
+    {{- include "ufc-webscrapper.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nodejs-api
+spec:
+  selector:
+    matchLabels:
+      {{- include "ufc-webscrapper.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: nodejs-api
+  replicas: {{ .Values.nodejsApi.replicas }}
+  template:
+    metadata:
+      labels:
+        {{- include "ufc-webscrapper.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: nodejs-api
+    spec:
+      containers:
+      - name: nodejs-api
+        image: "{{ .Values.nodejsApi.image.repository }}:{{ .Values.nodejsApi.image.tag }}"
+        imagePullPolicy: {{ .Values.nodejsApi.image.pullPolicy }}
+        env:
+        - name: DB_HOST
+          value: {{ include "ufc-webscrapper.fullname" . }}-mysql
+        - name: DB_PORT
+          value: {{ .Values.nodejsApi.env.dbPort | quote }}
+        - name: DB_USER
+          value: {{ .Values.nodejsApi.env.dbUser | quote }}
+        - name: DB_PASS
+          value: {{ .Values.nodejsApi.env.dbPassword | quote }}
+        - name: DB_NAME
+          value: {{ .Values.nodejsApi.env.dbName | quote }}
+        ports:
+        - containerPort: {{ .Values.nodejsApi.service.targetPort }}
+        {{- with .Values.nodejsApi.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+{{- end }}

@@ -1,0 +1,18 @@
+{{- if .Values.mysql.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ufc-webscrapper.fullname" . }}-mysql
+  labels:
+    {{- include "ufc-webscrapper.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mysql
+spec:
+  selector:
+    {{- include "ufc-webscrapper.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: mysql
+  ports:
+    - protocol: TCP
+      port: {{ .Values.mysql.service.port }}
+      targetPort: {{ .Values.mysql.service.port }}
+  type: {{ .Values.mysql.service.type }}
+{{- end }}

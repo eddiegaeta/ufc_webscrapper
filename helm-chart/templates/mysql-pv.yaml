@@ -1,0 +1,16 @@
+{{- if .Values.mysql.enabled }}
+{{- if .Values.mysql.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "ufc-webscrapper.fullname" . }}-mysql-pv
+spec:
+  capacity:
+    storage: {{ .Values.mysql.persistence.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.mysql.persistence.hostPath | quote }}
+  storageClassName: {{ .Values.mysql.persistence.storageClass }}
+{{- end }}
+{{- end }}
