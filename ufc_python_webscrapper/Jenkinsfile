@@ -1,46 +1,60 @@
 pipeline {
-    agent { label 'docker' }
+    agent {
+        docker {
+            image 'edthegreat/jenkins-docker-agent'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_CREDENTIALS')
     }
 
-    stages { 
+    stages {
         stage('SCM Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/eddiegaeta/ufc_webscrapper.git'
             }
         }
 
-        stage('Build docker image') {
-            steps {  
+        stage('Build Docker Image') {
+            steps {
                 dir('ufc_python_webscrapper') {
                     sh 'docker build -t edthegreat/ufc_python_webscrapper:$BUILD_NUMBER .'
                 }
             }
         }
 
-        stage('login to dockerhub') {
+        stage('Login to DockerHub') {
             steps {
-                sh 'cd ufc_python_webscrapper'
-                withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-                    sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                dir('ufc_python_webscrapper') {
+                    withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                        sh '''
+                        echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+                        '''
+                    }
                 }
             }
         }
 
-        stage('push image') {
+        stage('Push Image') {
             steps {
-                sh 'cd ufc_python_webscrapper'
-                sh 'docker push edthegreat/ufc_python_webscrapper:$BUILD_NUMBER'
+                dir('ufc_python_webscrapper') {
+                    sh 'docker push edthegreat/ufc_python_webscrapper:$BUILD_NUMBER'
+                }
             }
         }
     }
 
     post {
         always {
-            sh 'cd ufc_python_webscrapper'
-            sh 'docker logout'
+            script {
+                docker.image('edthegreat/jenkins-docker-agent').inside('-v /var/run/docker.sock:/var/run/docker.sock') {
+                    dir('ufc_python_webscrapper') {
+                        sh 'docker logout'
+                    }
+                }
+            }
         }
     }
 }
