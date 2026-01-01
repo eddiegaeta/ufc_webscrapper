@@ -269,7 +269,7 @@ This project is for educational and personal use only.
 
 ## 📧 Contact
 
-Eddie Gaeta - GitHub: [@eddiegaeta](https://github.com/eddiegaeta)
+Ed Gaeta - GitHub: [@eddiegaeta](https://github.com/eddiegaeta)
 
 ---
 
