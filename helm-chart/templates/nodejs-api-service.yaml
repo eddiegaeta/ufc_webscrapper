@@ -1,0 +1,18 @@
+{{- if .Values.nodejsApi.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ufc-webscrapper.fullname" . }}-nodejs-api
+  labels:
+    {{- include "ufc-webscrapper.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nodejs-api
+spec:
+  selector:
+    {{- include "ufc-webscrapper.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: nodejs-api
+  ports:
+    - protocol: TCP
+      port: {{ .Values.nodejsApi.service.port }}
+      targetPort: {{ .Values.nodejsApi.service.targetPort }}
+  type: {{ .Values.nodejsApi.service.type }}
+{{- end }}

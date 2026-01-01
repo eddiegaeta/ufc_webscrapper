@@ -1,0 +1,78 @@
+# MySQL Configuration
+mysql:
+  enabled: true
+  image:
+    repository: edthegreat/ufc_mysql_db
+    tag: "4"
+    pullPolicy: IfNotPresent
+  
+  rootPassword: password
+  database: mysql01
+  user: mysqluser
+  password: password
+  
+  service:
+    type: LoadBalancer
+    port: 3306
+  
+  persistence:
+    enabled: true
+    storageClass: local-storage
+    size: 1Gi
+    hostPath: /mnt/data
+  
+  resources: {}
+  
+  securityContext:
+    runAsUser: 0
+
+# Python Web Scrapper Configuration
+pythonWebscrapper:
+  enabled: true
+  image:
+    repository: edthegreat/ufc_python_webscrapper
+    tag: "13"
+    pullPolicy: IfNotPresent
+  
+  replicas: 1
+  
+  env:
+    dbHost: mysql
+    dbPort: "3306"
+    dbUser: mysqluser
+    dbPassword: password
+    dbName: mysql01
+  
+  resources: {}
+
+# Node.js API Configuration
+nodejsApi:
+  enabled: true
+  image:
+    repository: edthegreat/ufc_nodejs_api
+    tag: "5"
+    pullPolicy: IfNotPresent
+  
+  replicas: 1
+  
+  service:
+    type: LoadBalancer
+    port: 3000
+    targetPort: 3000
+  
+  env:
+    dbHost: mysql
+    dbPort: "3306"
+    dbUser: mysqluser
+    dbPassword: password
+    dbName: mysql01
+  
+  resources: {}
+
+# Ingress Configuration
+ingress:
+  enabled: false
+  className: ngrok
+  host: nice-mongrel-choice.ngrok-free.app
+  path: /
+  pathType: Prefix
