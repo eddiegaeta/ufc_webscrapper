@@ -17,8 +17,9 @@ mysql:
   
   persistence:
     enabled: true
-    storageClass: local-storage
+    storageClass: ""  # Use manual binding with hostPath
     size: 1Gi
+    createPV: true
     hostPath: /mnt/data
   
   resources: {}

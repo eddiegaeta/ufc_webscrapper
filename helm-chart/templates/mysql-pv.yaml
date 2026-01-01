@@ -1,5 +1,5 @@
 {{- if .Values.mysql.enabled }}
-{{- if .Values.mysql.persistence.enabled }}
+{{- if and .Values.mysql.persistence.enabled .Values.mysql.persistence.createPV }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -9,8 +9,13 @@ spec:
     storage: {{ .Values.mysql.persistence.size }}
   accessModes:
     - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
   hostPath:
     path: {{ .Values.mysql.persistence.hostPath | quote }}
-  storageClassName: {{ .Values.mysql.persistence.storageClass }}
+  {{- if .Values.mysql.persistence.storageClass }}
+  storageClassName: {{ .Values.mysql.persistence.storageClass | quote }}
+  {{- else }}
+  storageClassName: ""
+  {{- end }}
 {{- end }}
 {{- end }}
