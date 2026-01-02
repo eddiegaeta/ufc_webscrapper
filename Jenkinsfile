@@ -46,7 +46,7 @@ pipeline {
         stage('Helm Deploy') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG_FILE')]) {
+                    withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIALS', variable: 'KUBECONFIG_FILE')]) {
                         dir('helm-chart') {
                             sh '''
                             export KUBECONFIG=$KUBECONFIG_FILE
@@ -65,7 +65,7 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG_FILE')]) {
+                    withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIALS', variable: 'KUBECONFIG_FILE')]) {
                         sh '''
                         export KUBECONFIG=$KUBECONFIG_FILE
                         kubectl get pods -n ${HELM_NAMESPACE}
