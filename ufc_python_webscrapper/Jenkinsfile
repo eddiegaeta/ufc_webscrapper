@@ -8,6 +8,8 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_CREDENTIALS')
+        DOCKER_API_VERSION = '1.41'
+
     }
 
     stages {
