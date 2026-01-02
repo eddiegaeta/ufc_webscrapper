@@ -22,7 +22,7 @@ pipeline {
         stage('Setup Kubeconfig') {
             steps {
                 script {
-                    withCredentials([file(credentialsId: 'KUBECONFIG', variable: 'KUBECONFIG_FILE')]) {
+                    withCredentials([file(credentialsId: 'KUBECONFIG_CREDENTIALS', variable: 'KUBECONFIG_FILE')]) {
                         sh '''
                         mkdir -p ~/.kube
                         cp $KUBECONFIG_FILE ~/.kube/config
