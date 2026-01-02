@@ -3,6 +3,7 @@ pipeline {
         docker {
             image 'edthegreat/jenkins-docker-agent:1.0.0'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
+            label 'docker-agent-generic'
         }
     }
 
